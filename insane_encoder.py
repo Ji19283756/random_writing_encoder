@@ -891,331 +891,196 @@ def make_random_string(length):
     return all_char[:length]
 
 
-def the_most_insane_encoder(message, switches, height=10, width=10,
-                            type_of_encoding_key="random", encoding_key=""):
-    TL_TD = TL_top_down_vertical
-    TL_TD_R = TL_top_down_vertical_revert
-    TR_TD = TR_top_down_vertical
-    TR_TD_R = TR_top_down_vertical_revert
-    BL_TU = BL_top_up_vertical
-    BL_TU_R = BL_top_up_vertical_revert
-    BR_TU = BR_top_up_vertical
-    BR_TU_R = BR_top_up_vertical_revert
-    TL_LR = TL_left_right_horizontal_v2
-    TL_LR_R = TL_left_right_horizontal_revert
-    BL_LR = BL_left_right_horizontal
-    BL_LR_R = BL_left_right_horizontal_revert
-    TR_LR = TR_right_left_horizontal
-    TR_LR_R = TR_right_left_horizontal_revert
-    BR_RL = BR_right_left_horizontal
-    BR_RL_R = BR_right_left_horizontal_revert
-    TL_NE = TL_north_east_diagonal
-    TL_NE_R = TL_north_east_diagonal_revert
-    TR_NW = TR_north_west_diagonal
-    TR_NW_R = TR_north_west_diagonal_revert
-    BL_SE = BL_south_east_diagonal
-    BL_SE_R = BL_south_east_diagonal_revert
-    BR_SW = BR_south_west_diagonal
-    BR_SW_R = BR_south_west_diagonal_revert
-    TL_SW = TL_south_west_diagonal
-    TL_SW_R = TL_south_west_diagonal_revert
-    TR_SE = TR_south_east_diagonal
-    TR_SE_R = TR_south_east_diagonal_revert
-    BL_SW = BL_south_west_diagonal
-    BL_SW_R = BL_south_west_diagonal_revert
-    BR_SE = BR_south_east_diagonal
-    BR_SE_R = BR_south_east_diagonal_revert
+def the_most_insane_encoder(message, **kwargs):
 
-    opposite_dict = \
-        {TL_TD: TL_TD_R,
-         TR_TD: TR_TD_R,
-         BL_TU: BL_TU_R,
-         BR_TU: BR_TU_R,
-         TL_LR: TL_LR_R,
-         BL_LR: BL_LR_R,
-         TR_LR: TR_LR_R,
-         BR_RL: BR_RL_R,
-         TL_NE: TL_NE_R,
-         TR_NW: TR_NW_R,
-         BL_SE: BL_SE_R,
-         BR_SW: BR_SW_R,
-         TL_SW: TL_SW_R,
-         TR_SE: TR_SE_R,
-         BL_SW: BL_SW_R,
-         BR_SE: BR_SE_R,
-         TL_TD_R: TL_TD,
-         TR_TD_R: TR_TD,
-         BL_TU_R: BL_TU,
-         BR_TU_R: BR_TU,
-         TL_LR_R: TL_LR,
-         BL_LR_R: BL_LR,
-         TR_LR_R: TR_LR,
-         BR_RL_R: BR_RL,
-         TL_NE_R: TL_NE,
-         TR_NW_R: TR_NW,
-         BL_SE_R: BL_SE,
-         BR_SW_R: BR_SW,
-         TL_SW_R: TL_SW,
-         TR_SE_R: TR_SE,
-         BL_SW_R: BL_SW,
-         BR_SE_R: BR_SE}
+    switches = kwargs.get("switches", 10)
+    dict_chars = kwargs.get("encoding_dict", None)
+    order_of_encoding = kwargs.get("order_of_encoding", None)
+    mode = kwargs.get("mode", " ")
 
-    new_encoders = [
-        BL_LR,
-        BL_SE,
-        BL_SW,
-        BL_TU,
-        BR_RL,
-        BR_SE,
-        BR_SW,
-        BR_TU,
-        TL_LR,
-        TL_NE,
-        TL_SW,
-        TL_TD,
-        TR_LR,
-        TR_NW,
-        TR_SE,
-        TR_TD
-    ]
-    new_decoders = [
-        BL_LR_R,
-        BL_SE_R,
-        BL_SW_R,
-        BL_TU_R,
-        BR_RL_R,
-        BR_SE_R,
-        BR_SW_R,
-        BR_TU_R,
-        TL_LR_R,
-        TL_NE_R,
-        TL_SW_R,
-        TL_TD_R,
-        TR_LR_R,
-        TR_NW_R,
-        TR_SE_R,
-        TR_TD_R
-    ]
+    height = kwargs.get("height", 10)
+    width = kwargs.get("width", 10)
 
-    dict_chars = make_random_string(32)
-    first_sixteen = dict_chars[:16]
-    last_sixteen = dict_chars[16:]
+    encoders = [BL_left_right_horizontal,
+                    BL_south_east_diagonal,
+                    BL_south_west_diagonal,
+                    BL_top_up_vertical,
+                    BR_right_left_horizontal,
+                    BR_south_east_diagonal,
+                    BR_south_west_diagonal,
+                    BR_top_up_vertical,
+                    TL_left_right_horizontal_v2,
+                    TL_north_east_diagonal,
+                    TL_south_west_diagonal,
+                    TL_top_down_vertical,
+                    TR_right_left_horizontal,
+                    TR_north_west_diagonal,
+                    TR_south_east_diagonal,
+                    TR_top_down_vertical]
+    decoders = [BL_left_right_horizontal_revert,
+                    BL_south_east_diagonal_revert,
+                    BL_south_west_diagonal_revert,
+                    BL_top_up_vertical_revert,
+                    BR_right_left_horizontal_revert,
+                    BR_south_east_diagonal_revert,
+                    BR_south_west_diagonal_revert,
+                    BR_top_up_vertical_revert,
+                    TL_left_right_horizontal_revert,
+                    TL_north_east_diagonal_revert,
+                    TL_south_west_diagonal_revert,
+                    TL_top_down_vertical_revert,
+                    TR_right_left_horizontal_revert,
+                    TR_north_west_diagonal_revert,
+                    TR_south_east_diagonal_revert,
+                    TR_top_down_vertical_revert]
 
-    encoding_dict = {char: func for char, func in zip(first_sixteen, new_encoders)}
-    decoding_dict = {char: func for char, func in zip(last_sixteen, new_decoders)}
+    if dict_chars is None:
+        dict_chars = make_random_string(32)
+        first_sixteen = dict_chars[:16]
+        last_sixteen = dict_chars[16:]
+    elif len(dict_chars) != 32:
+        print("You need exactly 32 characters to make your own dictionary!")
+        return
+    else:
+        first_sixteen = dict_chars[:16]
+        last_sixteen = dict_chars[16:]
 
-    order_of_encoding = "".join(first_sixteen[randint(0, 15)] if x % 2 == 0
-                                else last_sixteen[randint(0, 15)]
-                                for x in range(switches))
-    global success
-    message = message + " " * (height * width - len(message))
-    og_message = message
+    encoding_dict = dict(zip(first_sixteen, encoders))
+    decoding_dict = dict(zip(last_sixteen, decoders))
+
+    if order_of_encoding is None:
+        if switches % 2 == 1:
+            order_of_encoding = "".join(choice(first_sixteen) if not x % 2 else choice(last_sixteen)
+                                        for x in range(switches))
+        else:
+            reverts_needed = int(switches / 2)
+            order_of_encoding = "".join(map(lambda x: "".join(x), zip(choices(first_sixteen, k=reverts_needed),
+                                                                      choices(last_sixteen, k=reverts_needed))))
+    else:
+        encodes = [order_of_encoding[x] for x in range(0, len(order_of_encoding),2)]
+        decodes = [order_of_encoding[x] for x in range(1, len(order_of_encoding),2)]
+        if any(encode not in encoding_dict for encode in encodes) or \
+                any(decode not in decoding_dict for decode in decodes):
+            print("Something's wrong with your order of encoding")
+            return
+
+    len_message = len(message)
+    print(f"len message {len_message}")
+    if mode == "numbers":
+        message = ",".join(str(ord(letter)) for letter in message) + ","
+
+        space_left = (height * width) - len(message)
+        commas_needed = int(space_left / 5)
+        numbers_needed = int(space_left * (4 / 5))
+
+        numbers_needed += (height * width) - (numbers_needed + commas_needed + len(message))
+
+        min_x_num_digits = int("1" + "0" * (numbers_needed - 1))
+        max_x_num_digits = int("9" * numbers_needed)
+
+        thing = list(str(randrange(min_x_num_digits, max_x_num_digits))) + list("," * commas_needed)
+        shuffle(thing)
+        message += "".join(thing)
+
+    else:
+        characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUV' \
+                     'WXYZ 1234567890"\'^[]<>{}\\/|;:.,~!?@#$%=&*()°€¥£-_+'
+        message += "".join(choices(characters, k=(height * width)))
 
     for x, letter in enumerate(order_of_encoding):
         if x % 2 == 0:
             message = encoding_dict[letter](message, height=height, width=width, spaces=0)
-            # print(f"{encoding_dict[option].__name__}")
         else:
             message = decoding_dict[letter](message, spaces=0)
-            # print(f"{decoding_dict[option].__name__}")
 
-    return message, order_of_encoding, dict_chars
+    return message, order_of_encoding, dict_chars, len_message
 
 
-def the_most_insane_decoder(message, dict_chars, order_of_encoding, height=10, width=10):
-    TL_TD = TL_top_down_vertical
-    TL_TD_R = TL_top_down_vertical_revert
-    TR_TD = TR_top_down_vertical
-    TR_TD_R = TR_top_down_vertical_revert
-    BL_TU = BL_top_up_vertical
-    BL_TU_R = BL_top_up_vertical_revert
-    BR_TU = BR_top_up_vertical
-    BR_TU_R = BR_top_up_vertical_revert
-    TL_LR = TL_left_right_horizontal_v2
-    TL_LR_R = TL_left_right_horizontal_revert
-    BL_LR = BL_left_right_horizontal
-    BL_LR_R = BL_left_right_horizontal_revert
-    TR_LR = TR_right_left_horizontal
-    TR_LR_R = TR_right_left_horizontal_revert
-    BR_RL = BR_right_left_horizontal
-    BR_RL_R = BR_right_left_horizontal_revert
-    TL_NE = TL_north_east_diagonal
-    TL_NE_R = TL_north_east_diagonal_revert
-    TR_NW = TR_north_west_diagonal
-    TR_NW_R = TR_north_west_diagonal_revert
-    BL_SE = BL_south_east_diagonal
-    BL_SE_R = BL_south_east_diagonal_revert
-    BR_SW = BR_south_west_diagonal
-    BR_SW_R = BR_south_west_diagonal_revert
-    TL_SW = TL_south_west_diagonal
-    TL_SW_R = TL_south_west_diagonal_revert
-    TR_SE = TR_south_east_diagonal
-    TR_SE_R = TR_south_east_diagonal_revert
-    BL_SW = BL_south_west_diagonal
-    BL_SW_R = BL_south_west_diagonal_revert
-    BR_SE = BR_south_east_diagonal
-    BR_SE_R = BR_south_east_diagonal_revert
-    opposite_dict = \
-        {TL_TD: TL_TD_R,
-         TR_TD: TR_TD_R,
-         BL_TU: BL_TU_R,
-         BR_TU: BR_TU_R,
-         TL_LR: TL_LR_R,
-         BL_LR: BL_LR_R,
-         TR_LR: TR_LR_R,
-         BR_RL: BR_RL_R,
-         TL_NE: TL_NE_R,
-         TR_NW: TR_NW_R,
-         BL_SE: BL_SE_R,
-         BR_SW: BR_SW_R,
-         TL_SW: TL_SW_R,
-         TR_SE: TR_SE_R,
-         BL_SW: BL_SW_R,
-         BR_SE: BR_SE_R,
-         TL_TD_R: TL_TD,
-         TR_TD_R: TR_TD,
-         BL_TU_R: BL_TU,
-         BR_TU_R: BR_TU,
-         TL_LR_R: TL_LR,
-         BL_LR_R: BL_LR,
-         TR_LR_R: TR_LR,
-         BR_RL_R: BR_RL,
-         TL_NE_R: TL_NE,
-         TR_NW_R: TR_NW,
-         BL_SE_R: BL_SE,
-         BR_SW_R: BR_SW,
-         TL_SW_R: TL_SW,
-         TR_SE_R: TR_SE,
-         BL_SW_R: BL_SW,
-         BR_SE_R: BR_SE}
-    new_encoders = [
-        BL_LR,
-        BL_SE,
-        BL_SW,
-        BL_TU,
-        BR_RL,
-        BR_SE,
-        BR_SW,
-        BR_TU,
-        TL_LR,
-        TL_NE,
-        TL_SW,
-        TL_TD,
-        TR_LR,
-        TR_NW,
-        TR_SE,
-        TR_TD
-    ]
-    new_decoders = [
-        BL_LR_R,
-        BL_SE_R,
-        BL_SW_R,
-        BL_TU_R,
-        BR_RL_R,
-        BR_SE_R,
-        BR_SW_R,
-        BR_TU_R,
-        TL_LR_R,
-        TL_NE_R,
-        TL_SW_R,
-        TL_TD_R,
-        TR_LR_R,
-        TR_NW_R,
-        TR_SE_R,
-        TR_TD_R
-    ]
+def the_most_insane_decoder(message, dict_chars, order_of_encoding, len_message, **kwargs):
+
+    height = kwargs.get("height", 10)
+    width = kwargs.get("width", 10)
+    mode = kwargs.get("mode", "")
+
+    encoders = [ BL_left_right_horizontal,
+                     BL_south_east_diagonal,
+                     BL_south_west_diagonal,
+                     BL_top_up_vertical,
+                     BR_right_left_horizontal,
+                     BR_south_east_diagonal,
+                     BR_south_west_diagonal,
+                     BR_top_up_vertical,
+                     TL_left_right_horizontal_v2,
+                     TL_north_east_diagonal,
+                     TL_south_west_diagonal,
+                     TL_top_down_vertical,
+                     TR_right_left_horizontal,
+                     TR_north_west_diagonal,
+                     TR_south_east_diagonal,
+                     TR_top_down_vertical ]
+    decoders = [ BL_left_right_horizontal_revert,
+                     BL_south_east_diagonal_revert,
+                     BL_south_west_diagonal_revert,
+                     BL_top_up_vertical_revert,
+                     BR_right_left_horizontal_revert,
+                     BR_south_east_diagonal_revert,
+                     BR_south_west_diagonal_revert,
+                     BR_top_up_vertical_revert,
+                     TL_left_right_horizontal_revert,
+                     TL_north_east_diagonal_revert,
+                     TL_south_west_diagonal_revert,
+                     TL_top_down_vertical_revert,
+                     TR_right_left_horizontal_revert,
+                     TR_north_west_diagonal_revert,
+                     TR_south_east_diagonal_revert,
+                     TR_top_down_vertical_revert ]
+
+    opposite_dict = dict(zip(decoders + encoders, encoders + decoders))
+
     first_sixteen = dict_chars[:16]
     last_sixteen = dict_chars[16:]
 
-    encoding_dict = {char: func for char, func in zip(first_sixteen, new_encoders)}
-    decoding_dict = {char: func for char, func in zip(last_sixteen, new_decoders)}
+    encoding_dict = dict(zip(first_sixteen, encoders))
+    decoding_dict = dict(zip(last_sixteen, decoders))
 
-    if order_of_encoding[0] in encoding_dict:
-        result = 1
-    else:
-        result = 0
+    result = int(order_of_encoding[0] in encoding_dict)
 
     for x, letter in enumerate(order_of_encoding[::-1]):
         if x % 2 == result:
             message = opposite_dict[encoding_dict[letter]](message, spaces=0)
         else:
-            message = opposite_dict[decoding_dict[letter]] \
-                (message, height=height, width=width, spaces=0)
+            message = opposite_dict[decoding_dict[letter]](message, height=height, width=width, spaces=0)
+
+    if mode == 'numbers':
+        message = "".join(chr(int(number)) for number in message.split(',')[:len_message])
+        # message = "".join(map(lambda x: chr(int(x)), message.split(',')[:len_message]))
+    else:
+        message = message[:len_message]
 
     return message
-
-
-def descramble_readable_message(message):
-    replace_pairs = ["<",">","\"|","|\""]
-
-    for look_for in replace_pairs:
-        print(f"replacing {look_for} with {'(())'}")
-        message = message.replace(look_for,"(())")
-    message = [line for line in message.split("(())") if len(line) > 0]
-    for x, value in enumerate(message):
-        if x % 2 == 0:
-            message[x] = int(value)
-    message = "".join(value * " " if isinstance(value, int) else value for value in message)
-
-    return message
-
-
-def make_scrambled_message_readable(message):
-    def make_num_x_long(number, length):
-        return (length - len(str(number))) * "0" + str(number)
-
-    largest = float("-inf")
-    count = 0
-    print(f"there are {message.count(' ')} spaces in the message")
-    for letter in message:
-        if letter == " ":
-            count += 1
-        else:
-            if count > largest:
-                largest = count
-            count = 0
-    longest_digit = len(str(largest))
-
-    count = 0
-    readable_message = []
-    for letter in message:
-        if letter == " ":
-            count += 1
-        else:
-            readable_message += [f"<{str(make_num_x_long(count, longest_digit))}>|\"{letter}\"|"]
-            count = 0
-
-    readable_message += [f"<{str(make_num_x_long(count, longest_digit))}>"]
-
-    readable_message = ''.join(readable_message)
-
-    return readable_message
-
 
 
 # OPTIONS:_______________________________________________________________________
 message = "Somebody once told me the world was gonna roll me I ain't the sharpest tool" \
           " in the shed She was looking kind of dumb with her finger and her thumb"
 success = 0
-height = 1_00
-width = 1_00
+height = 30
+width = 30
+mode = "numbers"
 
 spaces = 2
-switch_amount = 1_000
-#encoded_messages = []
-#average = []
+switch_amount = 10
+
 # _______________________________________________________________________________
-encoded_message, encoding_list, thirty_two_chars = the_most_insane_encoder \
-    (message, switch_amount, height=height, width=width)
-encoded_message = make_scrambled_message_readable(encoded_message)
+encoded_message, encoding_list, thirty_two_chars, len_message = the_most_insane_encoder \
+    (message, switches=switch_amount, height=height, width=width, mode=mode)
 
 print(f"scrambled message : \n{encoded_message}"
       f"\norder of encoding : {encoding_list}"
       f"\ndict chars : {thirty_two_chars}")
 
-encoded_message = descramble_readable_message(encoded_message)
 decoded_message = the_most_insane_decoder \
-    (encoded_message, thirty_two_chars, encoding_list, height=height, width=width)
+    (encoded_message, thirty_two_chars, encoding_list, len_message, height=height, width=width, mode=mode)
 
 print(f"decoded message : {decoded_message.strip()}")
 
